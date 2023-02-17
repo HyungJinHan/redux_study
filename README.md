@@ -100,6 +100,12 @@
         // 결과 : 3
         ```
 
+        <br>
+
+        > `Redux`의 `State` 값은 변형(`mutate`)을 해서는 절대 안됨
+        > 
+        > 즉, 상태를 수정하는 것이 아닌 새로운 것을 `return`한다는 개념
+
         </details>
 
 
@@ -128,12 +134,13 @@
       const countModifier = (count = 0, action) => {
         // count = 0로 count 초기값 설정
 
-        if (action.type === 'ADD') {
-          return count + 1;
-        } else if (action.type === 'MINUS') {
-          return count - 1;
-        } else {
-          return count;
+        switch (action.type) {
+          case 'ADD':
+            return count + 1;
+          case 'MINUS':
+            return count - 1;
+          default:
+            return count;
         }
       };
 
