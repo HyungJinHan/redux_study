@@ -102,10 +102,64 @@
 
         </details>
 
-<br>
-
-  - `replaceReducer()`
 
 <br>
 
   - `subscribe()`
+
+    - **`store`의 변화를 감지하는 함수**
+
+    <br>
+
+    - `dispatch()` & `action` 사용 예제
+
+      <details>
+
+      <summary><i>코드 보기</i></summary>
+
+      <br>
+
+      ```JS
+      import { createStore } from "redux";
+
+      const add = document.getElementById('add');
+      const minus = document.getElementById('minus');
+
+      const countModifier = (count = 0, action) => {
+        // count = 0로 count 초기값 설정
+
+        if (action.type === 'ADD') {
+          return count + 1;
+        } else if (action.type === 'MINUS') {
+          return count - 1;
+        } else {
+          return count;
+        }
+      };
+
+      const countStore = createStore(countModifier);
+
+      const onChange = () => {
+        number.innerText = countStore.getState();
+        // count의 변경 값 출력
+      }
+
+      countStore.subscribe(onChange);
+
+      const handleAdd = () => {
+        countStore.dispatch({ type: 'ADD' });
+      }
+
+      const handleMinus = () => {
+        countStore.dispatch({ type: 'MINUS' });
+      }
+
+      add.addEventListener('click', handleAdd);
+      minus.addEventListener('click', handleMinus);
+      ```
+
+      </details>
+
+<br>
+
+  - `replaceReducer()`
