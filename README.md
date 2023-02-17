@@ -105,6 +105,30 @@
         > `Redux`의 `State` 값은 변형(`mutate`)을 해서는 절대 안됨
         > 
         > 즉, 상태를 수정하는 것이 아닌 새로운 것을 `return`한다는 개념
+        
+        <br>
+
+        ```JS
+        state.push(action.type); // ❌
+      
+        [...state, {text: action.text}]; // ⭕ ES6 Spread
+        ```
+
+        <br>
+
+        ```JS
+        const stateArray = [
+          {text: 'asfd', id: 1676650491370},
+          {text: '123', id: 1676650490618},
+          {text: 'asdsad', id: 1676650489747}
+        ];
+
+        stateArray.splice(1, 1); // ❌
+        // 배열을 변형(mutate)하여 삭제하는 방식이기 때문에 적합하지 않음
+
+        stateArray.filter(toDo => toDo.id !== action.id);  // ⭕
+        // 배열에서 id 값이 다른 것들을 남겨두고 배열을 새로 생성하는 방식으로 적합함
+        ```
 
         </details>
 

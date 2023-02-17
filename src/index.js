@@ -50,16 +50,31 @@ const ul = document.querySelector('ul');
 const ADD_TODO = 'ADD_TODO';
 const DELETE_TODO = 'DELETE_TODO';
 
+const actionAddToDo = (text) => {
+  return {
+    type: ADD_TODO,
+    text
+  }
+}
+
+const actionDeleteToDo = (id) => {
+  return {
+    type: DELETE_TODO,
+    id
+  }
+}
+
 const reducer = (state = [], action) => {
   console.log(action);
 
   switch (action.type) {
     case ADD_TODO:
-      return [];
+      return [{ text: action.text, id: Date.now() }, ...state]; // ES6 Spread
     // state.push(action.text)와 같은 변형(mutate)해서는 안됨
     // 즉, 상태를 수정하는 것이 아닌 새로운 것을 return한다는 개념
     case DELETE_TODO:
-      return [];
+      return state.filter(toDo => toDo.id !== action.id);
+    // id 값이 다른 것들만 필터링하여 남겨두고 배열을 새로 생성
     default:
       return state;
   }
@@ -67,15 +82,56 @@ const reducer = (state = [], action) => {
 
 const store = createStore(reducer);
 
+const toDoChange = () => {
+  console.log(store.getState());
+}
+
+const dispatchAddToDo = (text) => {
+  store.dispatch(actionAddToDo(text));
+};
+
+const dispatchDeleteToDo = (e) => {
+  const id = e.target.parentNode.id;
+  // 1676648486933 (id: Date.now()의 결과)
+  store.dispatch(actionDeleteToDo(parseInt(id)));
+};
+
+store.subscribe(toDoChange);
+// 0: {text: 'ㅁㄴㅇㅁㅇ', id: 1676647437862}
+// 1: {text: 'ㅁㄴㅇㄴㅁㅇ', id: 1676647441743}
+// length: 2
+
+const paintToDos = () => {
+  const toDoList = store.getState();
+  ul.innerHTML = '';
+  // 매번 repainting 되는 것을 방지하는 작업
+
+  toDoList.forEach(
+    (toDo) => {
+      const li = document.createElement('li');
+      const btn = document.createElement('button');
+      btn.innerText = '❌';
+      btn.addEventListener('click', dispatchDeleteToDo);
+      li.id = toDo.id;
+      li.innerText = toDo.text;
+      li.appendChild(btn);
+      ul.appendChild(li);
+    }
+  )
+}
+
+store.subscribe(paintToDos);
+
 const onSubmit = (e) => {
   e.preventDefault();
   const toDo = input.value;
   input.value = '';
+
   if (toDo === '') {
     alert('Write To Do');
     return false;
   } else {
-    store.dispatch({ type: ADD_TODO, text: toDo });
+    dispatchAddToDo(toDo);
   }
 };
 
