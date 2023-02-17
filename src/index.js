@@ -1,23 +1,31 @@
+import { createStore } from "redux";
+
 const add = document.getElementById('add');
 const minus = document.getElementById('minus');
 const number = document.querySelector('span');
 
-let count = 0;
+const countModifier = (count = 0, action) => {
+  // count = 0로 count 초기값 설정
 
-number.innerText = count;
+  console.log(count, action);
 
-const updateText = () => {
-  number.innerText = count;
-}
+  if (action.type === 'ADD') {
+    return count += 1;
+  } else if (action.type === 'MINUS') {
+    return count -= 1;
+  } else {
+    return count;
+  }
+};
+
+const countStore = createStore(countModifier);
 
 const handleAdd = () => {
-  count += 1;
-  updateText();
+  countStore.dispatch({ type: 'ADD' });
 }
 
 const handleMinus = () => {
-  count -= 1;
-  updateText();
+  countStore.dispatch({ type: 'MINUS' });
 }
 
 add.addEventListener('click', handleAdd);
