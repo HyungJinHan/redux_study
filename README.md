@@ -275,9 +275,9 @@
 
 <br>
 
-### `connect` 사용 (`mapStateToProps` 함수)
+### `connect` 사용
 
-  - `store`로부터 `state`를 `Home` 컴포넌트에 전달하는 작업
+  - `store`로부터 `state`를 `Home` 컴포넌트에 전달하는 작업 (`mapStateToProps` 함수)
 
     <details>
 
@@ -332,4 +332,81 @@
       export default connect(mapStateToProps)(Home);
       // store로부터 state 전달 방식 (react-redux)
       ```
+    </detail>
+
+  <br>
+
+  - `store`로부터 `action`을 `Home` 컴포넌트에 전달하는 작업 (`mapDispatchToProps` 함수)
+  
+    <details>
+
+      <summary><i>코드 보기</i></summary>
+
+      <br>
+
+      ```JS
+      import React, { useState } from 'react';
+      import { connect } from 'react-redux';
+      import { actionCreators } from '../store';
+
+      const Home = ({ toDoList, addToDo }) => {
+        const [text, setText] = useState('');
+
+        const onChange = (e) => {
+          setText(e.target.value);
+        };
+
+        const onSubmit = (e) => {
+          e.preventDefault();
+          setText('');
+          addToDo(text);
+        };
+
+        return (
+          <>
+            <h1>To Do List (React-Redux)</h1>
+            <form
+              onSubmit={onSubmit}
+            >
+              <input
+                type={'text'}
+                placeholder='Write To Do'
+                value={text}
+                onChange={onChange}
+              />
+              &nbsp;
+              <button>➕</button>
+            </form>
+            <ul>
+              {JSON.stringify(toDoList)}
+            </ul>
+          </>
+        );
+      };
+
+      const mapStateToProps = (state) => {
+        return { toDoList: state }
+      };
+
+      const mapDispatchToProps = (dispatch) => {
+        return {
+          addToDo: (text) => dispatch(actionCreators.addToDo(text))
+        };
+      }
+
+      export default connect(mapStateToProps, mapDispatchToProps)(Home);
+      // store로부터 state, action 전달 방식 (react-redux)
+      ```
+
+      - 결과
+
+        ```JSON
+        [
+          {"text":"123214","id":1676706665137},
+          {"text":"asds","id":1676706663857},
+          {"text":"asdasd","id":1676706662825},
+          {"text":"hello","id":1676706659473}
+        ]
+        ```
+
     </detail>

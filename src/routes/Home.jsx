@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
+import { actionCreators } from '../store';
 
-const Home = (props) => {
-  console.log(props);
-
+const Home = ({ toDoList, addToDo }) => {
   const [text, setText] = useState('');
 
   const onChange = (e) => {
@@ -13,6 +12,7 @@ const Home = (props) => {
   const onSubmit = (e) => {
     e.preventDefault();
     setText('');
+    addToDo(text);
   };
 
   return (
@@ -31,7 +31,7 @@ const Home = (props) => {
         <button>➕</button>
       </form>
       <ul>
-        {JSON.stringify(props.toDoList)}
+        {JSON.stringify(toDoList)}
       </ul>
     </>
   );
@@ -41,5 +41,11 @@ const mapStateToProps = (state) => {
   return { toDoList: state }
 };
 
-export default connect(mapStateToProps)(Home);
-// store로부터 state 전달 방식 (react-redux)
+const mapDispatchToProps = (dispatch) => {
+  return {
+    addToDo: (text) => dispatch(actionCreators.addToDo(text))
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Home);
+// store로부터 state, action 전달 방식 (react-redux)
