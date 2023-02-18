@@ -194,3 +194,81 @@
 <br>
 
   - `replaceReducer()`
+
+<br>
+
+# `React Redux` 작업
+
+초기 `store`와 `action` 설정은 동일하게 진행
+
+<br>
+
+## `react-redux` 라이브러리의 `Provider` 사용하기
+
+### `Provider` 사용 예제
+
+- `index.js`의 `React` 렌더링 부분에 `Provider` 추가를 통해 `store` 전달
+
+  <details>
+
+    <summary><i>코드 보기</i></summary>
+
+    <br>
+
+    ```JS
+    import React from "react";
+    import ReactDOM from "react-dom/client";
+    import App from "./components/App";
+    import { BrowserRouter } from "react-router-dom";
+    import { Provider } from "react-redux";
+    import reactStore from './store'
+
+    const root = ReactDOM.createRoot(document.getElementById("root"));
+    root.render(
+      <BrowserRouter>
+        <Provider store={reactStore}>
+          <App />
+        </Provider>
+      </BrowserRouter>
+    );
+    ```
+
+    - `store.js`
+
+      ```JS
+      import { createStore } from "redux";
+
+      const ADD = 'ADD';
+      const DELETE = 'DELETE';
+
+      export const addToDo = (text) => {
+        return {
+          type: ADD,
+          text
+        }
+      }
+
+      export const deleteToDo = (id) => {
+        return {
+          type: DELETE,
+          id
+        }
+      }
+
+      const reducer = (state = [], action) => {
+        switch (action.type) {
+          case ADD:
+            return [{ text: action.text, id: Date.now() }, ...state];
+          case DELETE:
+            return state.filter(toDo => toDo !== action.id);
+          default:
+            return state;
+        }
+      };
+
+      const store = createStore(reducer);
+
+      export default store;
+      ```
+
+  </detail>

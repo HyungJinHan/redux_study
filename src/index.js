@@ -1,6 +1,12 @@
+import React from "react";
+import ReactDOM from "react-dom/client";
+import App from "./components/App";
+import { BrowserRouter } from "react-router-dom";
 import { createStore } from "redux";
+import { Provider } from "react-redux";
+import reactStore from './store'
 
-// --- Plus / Minus Code ---
+// --- Plus / Minus Code (Vanilla JS) ---
 const add = document.getElementById('add');
 const minus = document.getElementById('minus');
 const number = document.querySelector('span');
@@ -42,7 +48,7 @@ const handleMinus = () => {
 add.addEventListener('click', handleAdd);
 minus.addEventListener('click', handleMinus);
 
-// --- To Do List Code ---
+// --- To Do List Code (Vanilla JS) ---
 const form = document.querySelector('form');
 const input = document.querySelector('input');
 const ul = document.querySelector('ul');
@@ -136,3 +142,13 @@ const onSubmit = (e) => {
 };
 
 form.addEventListener('submit', onSubmit);
+
+// --- React ---
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(
+  <BrowserRouter>
+    <Provider store={reactStore}>
+      <App />
+    </Provider>
+  </BrowserRouter>
+);
