@@ -203,9 +203,9 @@
 
 <br>
 
-## `react-redux` 라이브러리의 `Provider` 사용하기
+## `react-redux` 라이브러리 사용하기
 
-### `Provider` 사용 예제
+### `Provider` 사용
 
 - `index.js`의 `React` 렌더링 부분에 `Provider` 추가를 통해 `store` 전달
 
@@ -272,3 +272,64 @@
       ```
 
   </detail>
+
+<br>
+
+### `connect` 사용 (`mapStateToProps` 함수)
+
+  - `store`로부터 `state`를 `Home` 컴포넌트에 전달하는 작업
+
+    <details>
+
+      <summary><i>코드 보기</i></summary>
+
+      <br>
+
+      ```JS
+      import React, { useState } from 'react';
+      import { connect } from 'react-redux';
+
+      const Home = (props) => {
+
+        console.log(props);
+        // 결과 : {test: true, dispatch: ƒ}
+        
+        const [text, setText] = useState('');
+
+        const onChange = (e) => {
+          setText(e.target.value);
+        };
+
+        const onSubmit = (e) => {
+          e.preventDefault();
+          setText('');
+        };
+
+        return (
+          <>
+            <h1>To Do List (React-Redux)</h1>
+            <form
+              onSubmit={onSubmit}
+            >
+              <input
+                type={'text'}
+                placeholder='Write To Do'
+                value={text}
+                onChange={onChange}
+              />
+              &nbsp;
+              <button>➕</button>
+            </form>
+            <ul></ul>
+          </>
+        );
+      };
+
+      const mapStateToProps = (state, ownProps) => {
+        return { test: true }
+      };
+
+      export default connect(mapStateToProps)(Home);
+      // store로부터 state 전달 방식 (react-redux)
+      ```
+    </detail>

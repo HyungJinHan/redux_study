@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
+import { connect } from 'react-redux';
 
-const Home = () => {
+const Home = (props) => {
+  console.log(props);
+
   const [text, setText] = useState('');
 
   const onChange = (e) => {
@@ -27,9 +30,16 @@ const Home = () => {
         &nbsp;
         <button>➕</button>
       </form>
-      <ul></ul>
+      <ul>
+        {JSON.stringify(props.toDoList)}
+      </ul>
     </>
   );
 };
 
-export default Home;
+const mapStateToProps = (state) => {
+  return { toDoList: state }
+};
+
+export default connect(mapStateToProps)(Home);
+// store로부터 state 전달 방식 (react-redux)
