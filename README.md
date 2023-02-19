@@ -503,6 +503,9 @@
   ```bash
   npm i @reduxjs/toolkit
   ```
+
+<br>
+
 ### `createAction` 함수로 교체 작업
 
   - `store.js` 수정
@@ -585,5 +588,104 @@
 
         export default store;
         ```
+
+      </detail>
+
+<br>
+
+### `createReducer` 함수로 교체 작업
+
+  - `store.js`의 `reducer` 수정
+
+    <details>
+
+      <summary><i>코드 보기</i></summary>
+
+      <br>
+
+      - 기존 `store.js`의 `reducer` 함수
+
+        ```JS
+        const reducer = (state = [], action) => {
+          var now = new Date();
+          var year = now.getFullYear();
+          var month = now.getMonth() + 1;
+          var day = now.getDate();
+          var hours = now.getHours();
+          var minutes = now.getMinutes();
+          var seconds = now.getSeconds();
+
+          switch (action.type) {
+            case addToDo.type:
+              console.log(action);
+              // {type: 'ADD', payload: 'asdasd'}
+              return [
+                {
+                  text: action.payload, // = action.text
+                  id: Date.now(),
+                  year: year,
+                  month: month,
+                  day: day,
+                  hours: hours,
+                  minutes: minutes,
+                  seconds: seconds
+                },
+                ...state
+              ];
+            case deleteToDo.type:
+              console.log(action);
+              // {type: 'DELETE', payload: 1676804738083}
+              return state.filter(toDo => toDo.id !== action.payload); // = action.id
+            default:
+              return state;
+          }
+        };
+        ```
+
+      <br>
+
+      - `createReducer` 함수 사용을 통한 `reducer` 함수 수정
+
+        ```JS
+        const reducer = createReducer([], {
+          // state 값을 변형(mutate)해도 무관 (라이브러리 자체에서 immer를 사용하기 때문)
+          [addToDo]: (state, action) => {
+            var now = new Date();
+            var year = now.getFullYear();
+            var month = now.getMonth() + 1;
+            var day = now.getDate();
+            var hours = now.getHours();
+            var minutes = now.getMinutes();
+            var seconds = now.getSeconds();
+
+            state.unshift({
+              text: action.payload, // = action.text
+              id: Date.now(),
+              year: year,
+              month: month,
+              day: day,
+              hours: hours,
+              minutes: minutes,
+              seconds: seconds
+            })
+          },
+          [deleteToDo]: (state, action) => {
+            return state.filter(toDo => toDo.id !== action.payload);
+          }
+        })
+        ```
+        <br>
+
+        > `immer`란?
+        > 
+        > `React`에서 불변성을 유지하느라 복잡해진 코드를 짧고 간결하게 작성할 수 있도록 도와주는 라이브러리를 의미한다.
+        > 
+        >> "불변성"이란?
+        >> 
+        >> 기존의 상태 값을 유지하면서 새로운 상태 값을 추가하는 것 을 의미한다.
+        >> 
+        >>> "불변성"을 지키는 이유
+        >>> 
+        >>> `React`에서는 해당 `state`라는 값은 새로운 참조 값으로 바뀐 것이 아니기 때문에 `push` 이전의 `state`와 `push` 이후의 `state`가 같다고 판단하여 리렌더링을 하지 않게 되기 때문이다.
 
       </detail>
