@@ -673,6 +673,7 @@
           }
         })
         ```
+        
         <br>
 
         > `immer`란?
@@ -688,3 +689,179 @@
         >>> `React`에서는 해당 `state`라는 값은 새로운 참조 값으로 바뀐 것이 아니기 때문에 `push` 이전의 `state`와 `push` 이후의 `state`가 같다고 판단하여 리렌더링을 하지 않게 되기 때문이다.
 
       </detail>
+
+<br>
+
+### `configureStore` 함수로 교체 작업
+
+  - `store.js`의 `createStore` 수정
+  
+    <details>
+
+      <summary><i>코드 보기</i></summary>
+
+      <br>
+
+      ```JS
+      const store = configureStore({ reducer });
+      // = const store = createStore(reducer);
+      ```
+
+    </detail>
+
+<br>
+
+### `createSlice` 함수로 교체 작업
+
+  - `store.js`의 `createReducer` 수정
+  
+    <details>
+
+      <summary><i>코드 보기</i></summary>
+
+      <br>
+      
+      - 기존의 `store.js`
+
+        ```JS
+        import { configureStore, createAction, createReducer } from "@reduxjs/toolkit";
+
+        const addToDo = createAction('ADD');
+        const deleteToDo = createAction('DELETE');
+
+        const reducer = createReducer([], {
+          // state 값을 변형(mutate)해도 무관 (라이브러리 자체에서 immer를 사용하기 때문)
+          [addToDo]: (state, action) => {
+            var now = new Date();
+            var year = `${now.getFullYear()}년`;
+            var month = `${now.getMonth() < 10 ? `0${now.getMonth()}` : now.getMonth()}월`;
+            var day = `${now.getDate() < 10 ? `0${now.getDate()}` : now.getDate()}일`;
+            var hours = `${now.getHours() < 10 ? `0${now.getHours()}` : now.getHours()}`;
+            var minutes = `${now.getMinutes() < 10 ? `0${now.getMinutes()}` : now.getMinutes()}`;
+            var seconds = `${now.getSeconds() < 10 ? `0${now.getSeconds()}` : now.getSeconds()}`;
+            const date = `${year} ${month} ${day} ${hours}:${minutes}:${seconds}`;
+
+            state.unshift({
+              text: action.payload, // = action.text
+              id: Date.now(),
+              date: date
+            })
+            // 변형(mutate)를 하는 경우 return이 없어야 작동
+          },
+          [deleteToDo]: (state, action) => {
+            return state.filter(toDo => toDo.id !== action.payload);
+            // 변형(mutate)를 하지 않는 경우 return이 있어야 작동
+          }
+        })
+
+        const store = configureStore({ reducer });
+
+        export const actionCreators = {
+          addToDo,
+          deleteToDo
+        }
+        ```
+
+      <br>
+      
+      - `store.js`의 `createReducer`를 `createSlice`로 수정하여 `action` 지정 작업
+
+        ```JS
+        import { configureStore, createSlice } from "@reduxjs/toolkit";
+
+        const toDoListReducer = createSlice({
+          // action도 함께 제공해줌 (별도의 action 지정할 필요 X)
+          name: 'toDoListReducer',
+          initialState: [],
+          reducers: {
+            add: (state, action) => {
+              var now = new Date();
+              var year = `${now.getFullYear()}년`;
+              var month = `${now.getMonth() < 10 ? `0${now.getMonth()}` : now.getMonth()}월`;
+              var day = `${now.getDate() < 10 ? `0${now.getDate()}` : now.getDate()}일`;
+              var hours = `${now.getHours() < 10 ? `0${now.getHours()}` : now.getHours()}`;
+              var minutes = `${now.getMinutes() < 10 ? `0${now.getMinutes()}` : now.getMinutes()}`;
+              var seconds = `${now.getSeconds() < 10 ? `0${now.getSeconds()}` : now.getSeconds()}`;
+              const date = `${year} ${month} ${day} ${hours}:${minutes}:${seconds}`;
+
+              state.unshift({
+                text: action.payload, // = action.text
+                id: Date.now(),
+                date: date
+              })
+            },
+            remove: (state, action) => {
+              return state.filter(toDo => toDo.id !== action.payload);
+            }
+          }
+        })
+
+        const store = configureStore({ reducer: toDoListReducer.reducer });
+
+        console.log(toDoListReducer.actions);
+        // toDoListReducer 내의 add, remove action 출력
+
+        export const { add, remove } = toDoListReducer.actions;
+
+        export default store;
+        ```
+
+        <br>
+
+      - To Do 항목 추가하는 버튼과 삭제하는 버튼 함수 수정 필요
+
+        - `Home.jsx`
+
+          ```JS
+          // 수정 전
+          import { addToDo } from '../store';
+
+          const mapDispatchToProps = (dispatch) = {
+            return {
+              addToDo: (text) = dispatch(actionCreators.addToDo(text))
+            };
+          }
+
+          // 수정 후
+          import { add } from '../store';
+
+          const mapDispatchToProps = (dispatch) = {
+            return {
+              addToDo: (text) = dispatch(add(text))
+            };
+          }
+          ```
+
+        <br>
+
+        - `ToDo.jsx`
+
+          ```JS
+          // 수정 전
+          import { addToDo, deleteToDo } from '../store';
+
+          const mapDispatchToProps = (dispatch, ownProps) = {
+            console.log(ownProps);
+
+            return {
+              onDeleteClick: () = {
+                dispatch(actionCreators.deleteToDo(parseInt(ownProps.id)));
+              }
+            }
+          }
+
+          // 수정 후
+          import { remove } from '../store';
+
+          const mapDispatchToProps = (dispatch, ownProps) = {
+            console.log(ownProps);
+
+            return {
+              onDeleteClick: () = {
+                dispatch(remove(parseInt(ownProps.id)));
+              }
+            }
+          }
+          ```
+
+    </detail>
