@@ -24,9 +24,22 @@ const Detail = ({ toDo }) => {
   // 결과 : {text: 'ㅂㄷㅂㅈㄷㅂㅈㄷ', id: 1676796326617}
 
   return (
-    <h1>
-      {toDo?.text}
-    </h1>
+    <>
+      <h1>
+        {toDo?.text}
+      </h1>
+      <h3>
+        Create at :&nbsp;
+        {toDo?.year}년&nbsp;
+        {toDo?.month < 10 ? `0${toDo?.month}` : toDo?.month}월&nbsp;
+        {toDo?.day < 10 ? `0${toDo?.day}` : toDo?.day}일&nbsp;
+        {toDo?.hours < 10 ? `0${toDo?.hours}` : toDo?.hours}
+        :
+        {toDo?.minutes < 10 ? `0${toDo?.minutes}` : toDo?.minutes}
+        :
+        {toDo?.seconds < 10 ? `0${toDo?.seconds}` : toDo?.seconds}
+      </h3>
+    </>
   );
 };
 
