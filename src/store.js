@@ -1,21 +1,25 @@
 import { createStore } from "redux";
+import { createAction } from "@reduxjs/toolkit";
 
-const ADD = 'ADD';
-const DELETE = 'DELETE';
+// const ADD = 'ADD';
+// const DELETE = 'DELETE';
 
-const addToDo = (text) => {
-  return {
-    type: ADD,
-    text
-  }
-}
+// const addToDo = (text) => {
+//   return {
+//     type: ADD,
+//     text
+//   }
+// }
 
-const deleteToDo = (id) => {
-  return {
-    type: DELETE,
-    id: parseInt(id)
-  }
-}
+// const deleteToDo = (id) => {
+//   return {
+//     type: DELETE,
+//     id: parseInt(id)
+//   }
+// }
+
+const addToDo = createAction('ADD');
+const deleteToDo = createAction('DELETE');
 
 const reducer = (state = [], action) => {
   var now = new Date();
@@ -27,10 +31,12 @@ const reducer = (state = [], action) => {
   var seconds = now.getSeconds();
 
   switch (action.type) {
-    case ADD:
+    case addToDo.type:
+      console.log(action);
+      // {type: 'ADD', payload: 'asdasd'}
       return [
         {
-          text: action.text,
+          text: action.payload, // = action.text
           id: Date.now(),
           year: year,
           month: month,
@@ -41,8 +47,10 @@ const reducer = (state = [], action) => {
         },
         ...state
       ];
-    case DELETE:
-      return state.filter(toDo => toDo.id !== action.id);
+    case deleteToDo.type:
+      console.log(action);
+      // {type: 'DELETE', payload: 1676804738083}
+      return state.filter(toDo => toDo.id !== action.payload); // = action.id
     default:
       return state;
   }
