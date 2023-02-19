@@ -1,6 +1,8 @@
 # `Redux` 스터디
 노마드 코더의 Redux 강의를 통한 React 상태관리 공부 레파지토리입니다.
 
+`Redux` 테스트용 `Deploy` 사이트 (스타일링 X) : https://redux-study.vercel.app/
+
 <br>
 
 # `Vanilla JavaScript Redux` 작업
