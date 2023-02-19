@@ -132,6 +132,7 @@ const onSubmit = (e) => {
   e.preventDefault();
   const toDo = input.value;
   input.value = '';
+  input.focus();
 
   if (toDo === '') {
     alert('Write To Do');
@@ -145,6 +146,7 @@ form.addEventListener('submit', onSubmit);
 
 // --- React ---
 const root = ReactDOM.createRoot(document.getElementById("root"));
+
 root.render(
   <BrowserRouter>
     <Provider store={reactStore}>

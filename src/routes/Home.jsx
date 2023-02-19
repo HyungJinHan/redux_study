@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { connect } from 'react-redux';
+import ToDo from '../components/ToDo';
 import { actionCreators } from '../store';
 
 const Home = ({ toDoList, addToDo }) => {
   const [text, setText] = useState('');
+  const toDoRef = useRef();
 
   const onChange = (e) => {
     setText(e.target.value);
@@ -12,7 +14,14 @@ const Home = ({ toDoList, addToDo }) => {
   const onSubmit = (e) => {
     e.preventDefault();
     setText('');
-    addToDo(text);
+    toDoRef.current.focus();
+
+    if (text === '') {
+      alert('Write To Do');
+      return false;
+    } else {
+      addToDo(text);
+    }
   };
 
   return (
@@ -26,12 +35,17 @@ const Home = ({ toDoList, addToDo }) => {
           placeholder='Write To Do'
           value={text}
           onChange={onChange}
+          ref={toDoRef}
         />
         &nbsp;
         <button>➕</button>
       </form>
       <ul>
-        {JSON.stringify(toDoList)}
+        {toDoList.map(
+          (toDo) => (
+            <ToDo {...toDo} key={toDo.id} />
+          )
+        )}
       </ul>
     </>
   );

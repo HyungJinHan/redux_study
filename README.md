@@ -344,69 +344,152 @@
 
       <br>
 
-      ```JS
-      import React, { useState } from 'react';
-      import { connect } from 'react-redux';
-      import { actionCreators } from '../store';
+      - To Do 추가
 
-      const Home = ({ toDoList, addToDo }) => {
-        const [text, setText] = useState('');
+        ```JS
+        import React, { useState } from 'react';
+        import { connect } from 'react-redux';
+        import { actionCreators } from '../store';
 
-        const onChange = (e) => {
-          setText(e.target.value);
+        const Home = ({ toDoList, addToDo }) => {
+          const [text, setText] = useState('');
+
+          const onChange = (e) => {
+            setText(e.target.value);
+          };
+
+          const onSubmit = (e) => {
+            e.preventDefault();
+            setText('');
+            addToDo(text);
+          };
+
+          return (
+            <>
+              <h1>To Do List (React-Redux)</h1>
+              <form
+                onSubmit={onSubmit}
+              >
+                <input
+                  type={'text'}
+                  placeholder='Write To Do'
+                  value={text}
+                  onChange={onChange}
+                />
+                &nbsp;
+                <button>➕</button>
+              </form>
+              <ul>
+                {JSON.stringify(toDoList)}
+              </ul>
+            </>
+          );
         };
 
-        const onSubmit = (e) => {
-          e.preventDefault();
-          setText('');
-          addToDo(text);
+        const mapStateToProps = (state) => {
+          return { toDoList: state }
         };
 
-        return (
-          <>
-            <h1>To Do List (React-Redux)</h1>
-            <form
-              onSubmit={onSubmit}
-            >
-              <input
-                type={'text'}
-                placeholder='Write To Do'
-                value={text}
-                onChange={onChange}
-              />
-              &nbsp;
-              <button>➕</button>
-            </form>
-            <ul>
-              {JSON.stringify(toDoList)}
-            </ul>
-          </>
-        );
-      };
+        const mapDispatchToProps = (dispatch) => {
+          return {
+            addToDo: (text) => dispatch(actionCreators.addToDo(text))
+          };
+        }
 
-      const mapStateToProps = (state) => {
-        return { toDoList: state }
-      };
+        export default connect(mapStateToProps, mapDispatchToProps)(Home);
+        // store로부터 state, action 전달 방식 (react-redux)
+        ```
 
-      const mapDispatchToProps = (dispatch) => {
-        return {
-          addToDo: (text) => dispatch(actionCreators.addToDo(text))
+        - 결과
+
+          ```JSON
+          [
+            {"text":"123214","id":1676706665137},
+            {"text":"asds","id":1676706663857},
+            {"text":"asdasd","id":1676706662825},
+            {"text":"hello","id":1676706659473}
+          ]
+          ```
+
+      - To Do 삭제
+
+        ```JS
+        import React from 'react';
+        import { connect } from 'react-redux';
+        import { actionCreators } from '../store';
+
+        const mapDispatchToProps = (dispatch, ownProps) => {
+          // ownProps = {text: 'asdasd', id: 1676792387623}
+          console.log(ownProps);
+          return {
+            onDeleteClick: () => {
+              dispatch(actionCreators.deleteToDo(parseInt(ownProps.id)));
+              // 해당 id를 식별해서 id가 같지 않은 것만 리스트에 남기고 필터링하여 새로운 배열 출력
+            }
+          }
+        }
+
+        const ToDo = ({ text, onDeleteClick }) => {
+          return (
+            <li>
+              {text} <button onClick={onDeleteClick}>❌</button>
+            </li>
+          );
         };
-      }
 
-      export default connect(mapStateToProps, mapDispatchToProps)(Home);
-      // store로부터 state, action 전달 방식 (react-redux)
-      ```
-
-      - 결과
-
-        ```JSON
-        [
-          {"text":"123214","id":1676706665137},
-          {"text":"asds","id":1676706663857},
-          {"text":"asdasd","id":1676706662825},
-          {"text":"hello","id":1676706659473}
-        ]
+        export default connect(null, mapDispatchToProps)(ToDo);
         ```
 
     </detail>
+
+<br>
+
+  - `store`로부터 `state` 배열 중 해당 `id`를 가진 `state`의 `text` 불러오기 (`mapStateToProps` 함수)
+
+    > `react-redux`와 `react-router-dom`의 업데이트로 인해 `ownProps` 작동 X
+    > 
+    > 
+    > 그로 인해 `ownProps`의 `params`를 불러오지 못함
+    > 
+    > 
+    > `react-router-dom`의 `useParams` 사용으로 `id` 값을 비교 후 `text` 불러옴
+  
+    <details>
+
+      <summary><i>코드 보기</i></summary>
+
+      <br>
+
+      - 해당 To Do의 Detail 페이지
+
+        ```JS
+        import React from 'react';
+        import { connect } from 'react-redux';
+        import { useParams } from 'react-router-dom';
+
+        const MapStateToProps = (state) => {
+          // useParams 사용을 위해 첫 글자 대문자화
+          const params = useParams();
+
+          console.log(params);
+          // 결과 : { id: '1676796326617' }
+
+          return {
+            toDo: state.find(toDo => toDo.id === parseInt(params.id))
+            // state에서 클릭 시의 params와 toDo의 id가 같은 것을 찾는 작업
+          };
+        };
+
+        const Detail = ({ toDo }) => {
+          console.log(toDo);
+          // 결과 : {text: 'ㅂㄷㅂㅈㄷㅂㅈㄷ', id: 1676796326617}
+
+          return (
+            <h1>
+              {toDo?.text}
+            </h1>
+          );
+        };
+
+        export default connect(MapStateToProps)(Detail);
+        ```
