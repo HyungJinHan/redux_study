@@ -13,7 +13,7 @@ const toDoListReducer = createSlice({
       var hours = `${now.getHours() < 10 ? `0${now.getHours()}` : now.getHours()}`;
       var minutes = `${now.getMinutes() < 10 ? `0${now.getMinutes()}` : now.getMinutes()}`;
       var seconds = `${now.getSeconds() < 10 ? `0${now.getSeconds()}` : now.getSeconds()}`;
-      const date = `${year} ${month} ${day} ${hours}:${minutes}:${seconds}`;
+      var date = `${year} ${month} ${day} ${hours}:${minutes}:${seconds}`;
 
       state.unshift({
         text: action.payload, // = action.text
