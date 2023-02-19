@@ -29,15 +29,10 @@ const Detail = ({ toDo }) => {
         {toDo?.text}
       </h1>
       <h3>
-        Create at :&nbsp;
-        {toDo?.year}년&nbsp;
-        {toDo?.month < 10 ? `0${toDo?.month}` : toDo?.month}월&nbsp;
-        {toDo?.day < 10 ? `0${toDo?.day}` : toDo?.day}일&nbsp;
-        {toDo?.hours < 10 ? `0${toDo?.hours}` : toDo?.hours}
-        :
-        {toDo?.minutes < 10 ? `0${toDo?.minutes}` : toDo?.minutes}
-        :
-        {toDo?.seconds < 10 ? `0${toDo?.seconds}` : toDo?.seconds}
+        Article ID : {toDo?.id}
+      </h3>
+      <h3>
+        Create at : {toDo?.date}
       </h3>
     </>
   );

@@ -1,0 +1,56 @@
+import { createStore } from "redux";
+import { createAction, createReducer } from "@reduxjs/toolkit";
+
+const ADD = 'ADD';
+const DELETE = 'DELETE';
+
+const addToDo = (text) => {
+  return {
+    type: ADD,
+    text
+  }
+}
+
+const deleteToDo = (id) => {
+  return {
+    type: DELETE,
+    id: parseInt(id)
+  }
+}
+
+const reducer = (state = [], action) => {
+  var now = new Date();
+  var year = now.getFullYear();
+  var month = now.getMonth() + 1;
+  var day = now.getDate();
+  var hours = now.getHours();
+  var minutes = now.getMinutes();
+  var seconds = now.getSeconds();
+
+  const date = `${year}년 ${month < 10 ? `0${month}` : month}월 ${day < 10 ? `0${day}` : day}일 ${hours < 10 ? `0${hours}` : hours}:${minutes < 10 ? `0${minutes}` : minutes}:${seconds < 10 ? `0${seconds}` : seconds}`
+
+  switch (action.type) {
+    case addToDo.type:
+      return [
+        {
+          text: action.text,
+          id: Date.now(),
+          date: date
+        },
+        ...state
+      ];
+    case deleteToDo.type:
+      return state.filter(toDo => toDo.id !== action.id);
+    default:
+      return state;
+  }
+};
+
+const store = createStore(reducer);
+
+export const actionCreators = {
+  addToDo,
+  deleteToDo
+}
+
+export default store;
