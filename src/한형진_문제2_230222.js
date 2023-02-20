@@ -1,4 +1,4 @@
-/* 
+/**
 userInfo: 유저의 행동과 아이디, 닉네임 정보를 담을 객체
 actionInfo: 입력한 record 정보가 담긴 userInfo에 따른 유저의 각각의 행동 문구 출력을 위한 배열 형태의 데이터
 enterAction: record에 담긴 action 정보가 "Write"일 경우, "님이 방명록에 새글을 남겼습니다."를 유저 닉네임과 함께 출력
@@ -11,8 +11,7 @@ errorRecord: record의 전체 길이가 잘못된 경우, "정보의 길이가 �
 record에 담긴 action 정보가 "Leave"의 경우, 유저 아이디를 "떠난 더비"로 변경
 record에 담긴 action 정보가 "Change"와 함께 닉네임 수정 시, 해당 유저의 모든 닉네임이 수정되어 정보 출력
 */
-
-function solution() {
+function solution2() {
   const userInfo = {};
   const actionInfo = [];
   const enterAction = "님이 방명록에 새글을 남겼습니다.";
@@ -60,4 +59,4 @@ function solution() {
   });
 }
 
-solution();
+solution2();
